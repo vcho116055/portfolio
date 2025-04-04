@@ -17,11 +17,22 @@
         </nav>
     </nav>
     <h1>
-        Vincent Cho
+        contact
     </h1>
-    <p>
-        I'm a second year data science major at UCSD! 
-    </p>
-    <img src = 'images\20240716_185658.jpg' alt = 'Steak and eggs I cooked' width = 500>
+    <form action="mailto:eubin.cho@gmail.com" method="post" enctype="text/plain">
+        <label>
+          Email:
+          <input type="email" name="email" />
+        </label>
+        <label>
+          Subject:
+          <input type="text" name="subject" />
+        </label>
+        <label>
+          Message:
+          <textarea name="body"></textarea>
+        </label>
+        <button>send</button>
+      </form>
 </body>
 </html>

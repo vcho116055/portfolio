@@ -3,7 +3,7 @@ body {
       and use the OS’s UI font as the website font
     */
   font: 100%/1.5 system-ui;
-  max-width: 80ch; 
+  max-width: 100ch; 
   margin-inline: auto;
   padding: 1rem;
   }
@@ -50,3 +50,52 @@ html {
   --color-accent: oklch(40% 0.1 270);
   accent-color: var(--color-accent);
   }
+
+input, textarea, button {
+  font-family: inherit;
+  }
+
+form {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1em;
+  }
+
+label {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  }
+
+label > span {
+    grid-column: 1;
+  }
+  
+label > input, label > textarea {
+    grid-column: 2;
+  }
+  
+button {
+    grid-column: 1 / -1;
+  }
+
+.projects {
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 1em;
+  align-items: start;
+}
+
+.projects > article {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+}
+
+.projects h2 {
+  margin: 0;
+}
+
+h1 {
+  font-size: 4rem;
+}

@@ -45,7 +45,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // Build theme switcher
   const label = document.createElement("label");
   label.className = "color-scheme";
-  label.textContent = "Theme:";
+  label.textContent = "Theme: ";
 
   const select = document.createElement("select");
   select.id = "color-scheme";

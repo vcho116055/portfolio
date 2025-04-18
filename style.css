@@ -59,6 +59,7 @@ input, textarea, button {
 
 form {
     display: grid;
+    grid-template-columns: auto 1fr;
     gap: 1em;
     max-width: 40rem;
     margin-inline: auto;
@@ -66,20 +67,15 @@ form {
   
 label {
     display: grid;
-    grid-template-columns: 6rem 1fr;
-    align-items: center;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
     font-family: inherit;
     font-size: 0.9rem;
   }
   
-label.color-scheme {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-  }
-  
 label > span {
     grid-column: 1;
+    align-self: center;
   }
   
 label > input,
@@ -89,6 +85,8 @@ label > textarea {
     border: 1px solid #888;
     border-radius: 4px;
     font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
   }
   
 textarea {

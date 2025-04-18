@@ -64,14 +64,17 @@ form {
   }
 
 label {
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-  position: absolute; 
-  top: 1rem;
-  right: 1rem;
-  font-family: inherit;
-  font-size: 80%;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    font-family: inherit;
+    font-size: 80%;
+  }
+  
+label.color-scheme {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
   }
 
 label > span {

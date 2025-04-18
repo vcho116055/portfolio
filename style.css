@@ -1,12 +1,10 @@
 
 body {
-  /* Set line height to 1.5 times the font size
-      and use the OS’s UI font as the website font
-    */
   font: 100%/1.5 system-ui;
-  max-width: 100ch; 
+  max-width: 100ch;
   margin-inline: auto;
   padding: 1rem;
+  position: relative;
   }
 
 nav ul {
@@ -72,6 +70,14 @@ label {
     font-family: inherit;
     font-size: 0.9rem;
   }
+
+label.color-scheme {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 80%;
+    font-family: inherit;
+    }
   
 label > span {
     grid-column: 1;

@@ -128,3 +128,9 @@ textarea {
 h1 {
   font-size: 4rem;
 }
+
+.projects > article img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.5em;
+}

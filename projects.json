@@ -1,0 +1,12 @@
+[
+    {
+      "title": "Portfolio Website",
+      "image": "/portfolio/images/portfolio.png",
+      "description": "A personal portfolio website built with HTML, CSS, and JavaScript."
+    },
+    {
+      "title": "Data Analysis Project",
+      "image": "/portfolio/images/visualization.png",
+      "description": "A project analyzing public datasets with Python and pandas."
+    }
+  ]

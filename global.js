@@ -97,7 +97,7 @@ export async function fetchJSON(url) {
   }
 }
 
-export function renderProjects(project, containerElement) {
+export function renderProjects(projects, containerElement) {
   containerElement.innerHTML = '';
   for (const project of projects) {
     const article = document.createElement('article');

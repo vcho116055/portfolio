@@ -21,18 +21,18 @@
     import { fetchJSON, renderProjects, fetchGitHubData } from '/portfolio/global.js';
 
     async function loadProjects() {
-      const projects = await fetchJSON('/portfolio/projects.json');
       const latestProjects = projects.slice(0, 3);
       renderProjects(latestProjects, projectsContainer);
       const projectsContainer = document.querySelector('.projects');
+      const projects = await fetchJSON('/portfolio/projects.json');
       if (projects && projectsContainer) {
         renderProjects(projects, projectsContainer);
       }
     }
 
     async function loadGitHubStats() {
-      const githubData = await fetchGitHubData('vcho116055');
       const profileStats = document.querySelector('#profile-stats');
+      const githubData = await fetchGitHubData('vcho116055');
       if (profileStats && githubData) {
         profileStats.innerHTML = `
           <h2>GitHub Stats</h2>

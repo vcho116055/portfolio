@@ -12,10 +12,14 @@
   <p>I'm a second year data science major at UCSD!</p>
   <img src="/portfolio/images/20240716_185658.jpg" alt="Steak and eggs I cooked" width="500">
 
+  <div id="profile-stats">
+    <!-- GitHub stats will be loaded here -->
+  </div>
+
   <div class="projects"></div>
 
   <script type="module">
-    import { fetchJSON, renderProjects } from '/portfolio/global.js';
+    import { fetchJSON, renderProjects, fetchGitHubData } from '/portfolio/global.js';
 
     async function loadProjects() {
       const projects = await fetchJSON('/portfolio/projects.json');
@@ -25,7 +29,24 @@
       }
     }
 
+    async function loadGitHubStats() {
+      const githubData = await fetchGitHubData('vcho116055'); // Replace with your GitHub username
+      const profileStats = document.querySelector('#profile-stats');
+      if (profileStats && githubData) {
+        profileStats.innerHTML = `
+          <h2>GitHub Stats</h2>
+          <dl>
+            <dt>Public Repos:</dt><dd>${githubData.public_repos}</dd>
+            <dt>Public Gists:</dt><dd>${githubData.public_gists}</dd>
+            <dt>Followers:</dt><dd>${githubData.followers}</dd>
+            <dt>Following:</dt><dd>${githubData.following}</dd>
+          </dl>
+        `;
+      }
+    }
+
     loadProjects();
+    loadGitHubStats();
   </script>
 </body>
 </html>

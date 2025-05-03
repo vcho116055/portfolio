@@ -182,19 +182,21 @@ path {
   cursor: pointer;
 }
 
-.selected {
-  --color: oklch(60% 45% 0);
-}
-
-.selected:is(path) {
-  fill: var(--color);
-}
-
-.selected:is(li)::before {
-  background: var(--color);
-}
-
 .year {
   font-style: italic;
   font-variant-numeric: oldstyle-nums;
+}
+
+path.selected {
+  stroke: black;
+  stroke-width: 2;
+}
+
+.legend li.selected {
+  font-weight: bold;
+}
+
+.legend li.selected::before {
+  outline: 2px solid black;
+  outline-offset: 2px;
 }

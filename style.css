@@ -134,3 +134,67 @@ h1 {
   height: auto;
   border-radius: 0.5em;
 }
+
+.container {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+#projects-pie-plot {
+  max-width: 20em;
+  margin-block: 2em;
+  overflow: visible;
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(9em,1fr));
+  gap: 1rem;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-block: 2em;
+  flex: 1;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  --size: 1rem;
+}
+
+.legend li::before {
+  content: '';
+  width: var(--size);
+  height: var(--size);
+  background: var(--color);
+  border-radius: .2rem;
+}
+
+svg:has(path:hover) path:not(:hover) {
+  opacity: .5;
+}
+
+path {
+  transition: 300ms;
+  cursor: pointer;
+}
+
+.selected {
+  --color: oklch(60% 45% 0);
+}
+
+.selected:is(path) {
+  fill: var(--color);
+}
+
+.selected:is(li)::before {
+  background: var(--color);
+}
+
+.year {
+  font-style: italic;
+  font-variant-numeric: oldstyle-nums;
+}

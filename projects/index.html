@@ -1,20 +1,22 @@
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vincent Cho: Personal site and portfolio</title>
-  <base href="/portfolio/">
-  <link rel="stylesheet" href="/portfolio/style.css" />
-  <script type="module" src="/portfolio/global.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Projects · Vincent Cho</title>
+  <base href="/portfolio/projects/">
+  <link rel="stylesheet" href="/portfolio/style.css">
+  <script type="module" src="/portfolio/lib/projects.js"></script>
 </head>
 <body>
-  <div class="projects-wrapper">
-    <label for="search" class="visually-hidden">Search projects</label>
-    <input type="search" id="search" class="searchBar" placeholder="🔍 Search projects…">
-    <h1 class="projects-title">Projects</h1>
+  <h1>Projects</h1>
+
+  <div class="container">
     <svg id="projects-pie-plot" viewBox="-50 -50 100 100"></svg>
     <ul class="legend"></ul>
-    <div class="projects"></div>
   </div>
+
+  <input class="searchBar" type="search" aria-label="Search projects" placeholder="🔍 Search projects…">
+
+  <div class="projects"></div>
 </body>
 </html>

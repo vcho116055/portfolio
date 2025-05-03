@@ -112,13 +112,10 @@ export async function fetchGitHubData(username) {
   return fetchJSON(`https://api.github.com/users/${username}`);
 }
 
-const svg = d3.select(".projects").append("svg").attr("id", "projects-pie-plot").attr("viewBox", "-50 -50 100 100");
-const legend = d3.select(".projects").append("ul").attr("class", "legend");
-const searchInput = document.createElement('input');
-searchInput.type = 'search';
-searchInput.placeholder = '🔍 Search projects…';
-searchInput.className = 'searchBar';
-document.querySelector('.projects').insertAdjacentElement('beforebegin', searchInput);
+const svg = d3.select("#projects-pie-plot");
+const legend = d3.select(".legend");
+const searchInput = document.querySelector(".searchBar");
+const projectContainer = document.querySelector(".projects");
 
 let selectedIndex = -1;
 let query = '';
@@ -155,12 +152,7 @@ fetchJSON("/portfolio/projects.json").then(projects => {
           selectedIndex = selectedIndex === i ? -1 : i;
           svg.selectAll("path").attr("class", (_, idx) => idx === selectedIndex ? 'selected' : null);
           legend.selectAll("li").attr("class", (_, idx) => idx === selectedIndex ? 'selected' : null);
-
-          const visible = selectedIndex === -1
-            ? filterProjects()
-            : filterProjects().filter(p => p.year === data[selectedIndex].label);
-
-          renderProjects(visible, document.querySelector('.projects'));
+          rerender();
         });
 
       legend.append("li")
@@ -171,23 +163,25 @@ fetchJSON("/portfolio/projects.json").then(projects => {
           selectedIndex = selectedIndex === i ? -1 : i;
           svg.selectAll("path").attr("class", (_, idx) => idx === selectedIndex ? 'selected' : null);
           legend.selectAll("li").attr("class", (_, idx) => idx === selectedIndex ? 'selected' : null);
-
-          const visible = selectedIndex === -1
-            ? filterProjects()
-            : filterProjects().filter(p => p.year === data[selectedIndex].label);
-
-          renderProjects(visible, document.querySelector('.projects'));
+          rerender();
         });
     });
   }
 
-  renderProjects(projects, document.querySelector('.projects'));
+  function rerender() {
+    const filtered = filterProjects();
+    const visible = selectedIndex === -1
+      ? filtered
+      : filtered.filter(p => p.year === d3.selectAll(".legend li").data()[selectedIndex]?.label);
+    renderProjects(visible, projectContainer);
+    renderPieChart(filtered);
+  }
+
+  renderProjects(projects, projectContainer);
   renderPieChart(projects);
 
   searchInput.addEventListener("input", (e) => {
     query = e.target.value;
-    const visible = filterProjects();
-    renderProjects(selectedIndex === -1 ? visible : visible.filter(p => p.year === d3.selectAll(".legend li").nodes()[selectedIndex]?.textContent?.split(' ')[0]), document.querySelector('.projects'));
-    renderPieChart(visible);
+    rerender();
   });
 });

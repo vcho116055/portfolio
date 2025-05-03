@@ -161,12 +161,12 @@ h1 {
 .legend li {
   display: flex;
   align-items: center;
-  gap: .5rem;
+  gap: 0.5rem;
   --size: 1rem;
 }
 
 .legend li::before {
-  content: '';
+  content: "";
   width: var(--size);
   height: var(--size);
   background: var(--color);
@@ -174,7 +174,7 @@ h1 {
 }
 
 svg:has(path:hover) path:not(:hover) {
-  opacity: .5;
+  opacity: 0.5;
 }
 
 path {

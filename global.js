@@ -1,3 +1,5 @@
+import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
+
 console.log("IT’S ALIVE!");
 
 function $$(selector, context = document) {
@@ -17,7 +19,6 @@ const BASE_PATH = (location.hostname === "localhost" || location.hostname === "1
   : "/portfolio/";
 
 window.addEventListener("DOMContentLoaded", () => {
-  // Build nav
   const nav = document.createElement("nav");
   document.body.prepend(nav);
 
@@ -42,7 +43,6 @@ window.addEventListener("DOMContentLoaded", () => {
     nav.appendChild(a);
   }
 
-  // Build theme switcher
   const label = document.createElement("label");
   label.className = "color-scheme";
   label.textContent = "Theme: ";
@@ -84,14 +84,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
 export async function fetchJSON(url) {
   try {
-    // Fetch the JSON file from the given URL
     const response = await fetch(url);
-    console.log(response)
     if (!response.ok) {
       throw new Error(`Failed to fetch projects: ${response.statusText}`);
     }
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error('Error fetching or parsing JSON data:', error);
   }
@@ -102,9 +99,10 @@ export function renderProjects(projects, containerElement) {
   for (const project of projects) {
     const article = document.createElement('article');
     article.innerHTML = `
-    <h3>${project.title}</h3>
-    <img src="${project.image}" alt="${project.title}">
-    <p>${project.description}</p>
+      <h3>${project.title}</h3>
+      <img src="${project.image}" alt="${project.title}">
+      <p>${project.description}</p>
+      <p class="year">${project.year ?? ''}</p>
     `;
     containerElement.appendChild(article);
   }
@@ -113,3 +111,83 @@ export function renderProjects(projects, containerElement) {
 export async function fetchGitHubData(username) {
   return fetchJSON(`https://api.github.com/users/${username}`);
 }
+
+const svg = d3.select(".projects").append("svg").attr("id", "projects-pie-plot").attr("viewBox", "-50 -50 100 100");
+const legend = d3.select(".projects").append("ul").attr("class", "legend");
+const searchInput = document.createElement('input');
+searchInput.type = 'search';
+searchInput.placeholder = '🔍 Search projects…';
+searchInput.className = 'searchBar';
+document.querySelector('.projects').prepend(searchInput);
+
+let selectedIndex = -1;
+let query = '';
+
+fetchJSON("/portfolio/projects.json").then(projects => {
+  projects.forEach(p => p.year = "2023");
+
+  function filterProjects() {
+    return projects.filter((project) => {
+      const text = Object.values(project).join('\n').toLowerCase();
+      return text.includes(query.toLowerCase());
+    });
+  }
+
+  function renderPieChart(projectsGiven) {
+    svg.selectAll("path").remove();
+    legend.selectAll("li").remove();
+
+    let data = d3.rollups(projectsGiven, v => v.length, d => d.year)
+      .map(([year, count]) => ({ label: year, value: count }));
+
+    const arcGen = d3.arc().innerRadius(0).outerRadius(50);
+    const sliceGen = d3.pie().value(d => d.value);
+    const arcData = sliceGen(data);
+    const colors = d3.scaleOrdinal(d3.schemeTableau10);
+
+    arcData.forEach((d, i) => {
+      svg.append("path")
+        .attr("d", arcGen(d))
+        .attr("fill", colors(i))
+        .attr("class", selectedIndex === i ? 'selected' : null)
+        .style("cursor", "pointer")
+        .on("click", () => {
+          selectedIndex = selectedIndex === i ? -1 : i;
+          svg.selectAll("path").attr("class", (_, idx) => idx === selectedIndex ? 'selected' : null);
+          legend.selectAll("li").attr("class", (_, idx) => idx === selectedIndex ? 'selected' : null);
+
+          const visible = selectedIndex === -1
+            ? filterProjects()
+            : filterProjects().filter(p => p.year === data[selectedIndex].label);
+
+          renderProjects(visible, document.querySelector('.projects'));
+        });
+
+      legend.append("li")
+        .attr("style", `--color:${colors(i)}`)
+        .attr("class", selectedIndex === i ? 'selected' : null)
+        .html(`<span class="swatch"></span> ${data[i].label} <em>(${data[i].value})</em>`)
+        .on("click", () => {
+          selectedIndex = selectedIndex === i ? -1 : i;
+          svg.selectAll("path").attr("class", (_, idx) => idx === selectedIndex ? 'selected' : null);
+          legend.selectAll("li").attr("class", (_, idx) => idx === selectedIndex ? 'selected' : null);
+
+          const visible = selectedIndex === -1
+            ? filterProjects()
+            : filterProjects().filter(p => p.year === data[selectedIndex].label);
+
+          renderProjects(visible, document.querySelector('.projects'));
+        });
+    });
+  }
+
+  renderProjects(projects, document.querySelector('.projects'));
+  renderPieChart(projects);
+
+  searchInput.addEventListener("input", (e) => {
+    query = e.target.value;
+    const visible = filterProjects();
+    renderProjects(selectedIndex === -1 ? visible : visible.filter(p => p.year === d3.selectAll(".legend li").nodes()[selectedIndex]?.textContent?.split(' ')[0]), document.querySelector('.projects'));
+    renderPieChart(visible);
+  });
+});

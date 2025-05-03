@@ -118,7 +118,7 @@ const searchInput = document.createElement('input');
 searchInput.type = 'search';
 searchInput.placeholder = '🔍 Search projects…';
 searchInput.className = 'searchBar';
-document.querySelector('.projects').prepend(searchInput);
+document.querySelector('.projects').insertAdjacentElement('beforebegin', searchInput);
 
 let selectedIndex = -1;
 let query = '';

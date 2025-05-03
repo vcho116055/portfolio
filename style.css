@@ -149,13 +149,13 @@ h1 {
 }
 
 .legend {
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(9em,1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   border: 1px solid #ccc;
   padding: 1rem;
   margin-block: 2em;
-  flex: 1;
+  list-style: none;
 }
 
 .legend li {
@@ -170,7 +170,7 @@ h1 {
   width: var(--size);
   height: var(--size);
   background: var(--color);
-  border-radius: .2rem;
+  border-radius: 50%;
 }
 
 svg:has(path:hover) path:not(:hover) {

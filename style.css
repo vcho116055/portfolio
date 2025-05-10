@@ -198,3 +198,36 @@ path {
 .selected:is(li)::before {
   background: var(--color);
 }
+
+dl.stats, dl.info {
+  display:grid;
+  grid-template-columns:max-content 1fr;
+  gap:.25em .75em;
+  margin-block:1.5rem;
+}
+dl.stats dt,
+dl.info  dt {opacity:.7;font-weight:500;}
+dl.stats dd,
+dl.info  dd {margin:0;}
+
+.tooltip{
+  position:fixed;
+  background:rgba(255 255 255 / .85);
+  backdrop-filter:blur(4px);
+  padding:.6em .9em;
+  border-radius:.4em;
+  box-shadow:0 4px 18px rgb(0 0 0 / .15);
+  z-index:99;
+  transition:opacity .2s ease;
+}
+.tooltip[hidden]{opacity:0;visibility:hidden}
+
+circle{
+  transition:200ms;
+  transform-origin:center;
+  transform-box:fill-box;
+}
+circle.selected{fill:oklch(60% 45% 0);}
+
+.gridlines path{display:none;}
+.gridlines line{stroke:#888;stroke-opacity:.3;stroke-dasharray:3 3}

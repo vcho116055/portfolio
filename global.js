@@ -5,12 +5,13 @@ function $$(selector, context = document) {
 }
 
 const pages = [
-  { url: '', title: 'Home' },
-  { url: 'projects/', title: 'Projects' },
-  { url: 'contact/', title: 'Contact' },
-  { url: 'cv/', title: 'Resume' },
+  { url: '',             title: 'Home' },
+  { url: 'projects/',    title: 'Projects' },
+  { url: 'contact/',     title: 'Contact' },
+  { url: 'cv/',          title: 'Resume' },
+  { url: 'meta/',        title: 'Meta' },
   { url: 'https://github.com/vcho116055', title: 'Profile', target: '_blank' }
-]
+];
 
 const BASE_PATH = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? '/' : '/portfolio/'
 

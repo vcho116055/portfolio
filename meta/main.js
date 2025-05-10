@@ -103,8 +103,11 @@ function renderScatter (commits) {
      .call(d3.axisLeft(y).tickFormat(d => `${(d%24).toString().padStart(2,'0')}:00`));
 
   const brush = d3.brush()
-      .extent([[usable.x0, usable.y1],[usable.x1, usable.y0]])
-      .on('brush end', ({selection}) => highlight(selection));
+  .extent([[usable.x0, usable.y1], [usable.x1, usable.y0]])
+  .on('brush end', ({selection}) => {
+    if (!selection) return;
+    highlight(selection);
+  });
 
   svg.call(brush);
   svg.selectAll('.dots, .overlay ~ *').raise();

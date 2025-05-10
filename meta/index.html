@@ -1,0 +1,32 @@
+s<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Meta&nbsp;analysis · Vincent Cho</title>
+
+    <base href="/portfolio/meta/">
+    <link rel="stylesheet" href="/portfolio/style.css" />
+    <script type="module" src="/portfolio/meta/main.js"></script>
+  </head>
+
+  <body>
+    <h1>Repository meta-analysis</h1>
+    <p>This page is generated automatically from the code in this repo (lines-of-code,
+       commits, and more) using <code>elocuent</code> &amp; <code>d3</code>.</p>
+
+    <div id="stats"></div>
+
+    <h2>Commits by time of day</h2>
+    <p id="selection-count">No commits selected</p>
+    <div id="chart"></div>
+    <dl id="language-breakdown" class="stats"></dl>
+
+    <dl id="commit-tooltip" class="info tooltip" hidden>
+      <dt>Commit</dt><dd><a id="commit-link" target="_blank"></a></dd>
+      <dt>Date</dt><dd id="commit-date"></dd>
+      <dt>Time</dt><dd id="commit-time"></dd>
+      <dt>Author</dt><dd id="commit-author"></dd>
+      <dt>Lines edited</dt><dd id="commit-lines"></dd>
+    </dl>
+  </body>
+</html>

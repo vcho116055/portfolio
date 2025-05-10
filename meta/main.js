@@ -74,22 +74,25 @@ function renderScatter (commits) {
      .attr('class','gridlines');
 
   const dots = svg.append('g').attr('class','dots').selectAll('circle')
-    .data(d3.sort(commits, d=>-d.totalLines))
-    .join('circle')
-      .attr('cx', d=>x(d.datetime))
-      .attr('cy', d=>y(d.hourFrac))
-      .attr('r' , d=>r(d.totalLines))
-      .attr('fill','steelblue')
-      .attr('fill-opacity',0.7)
-      .on('mouseenter', (ev,d) => {
-        d3.select(ev.currentTarget).attr('fill-opacity',1);
-        showTooltip(d, ev.clientX, ev.clientY, true);
-      })
-      .on('mousemove', (ev,d) => showTooltip(d, ev.clientX, ev.clientY))
-      .on('mouseleave', (ev,d) => {
-        d3.select(ev.currentTarget).attr('fill-opacity',0.7);
-        showTooltip(null);
-      });
+  .data(d3.sort(commits, d=>-d.totalLines))
+  .join('circle')
+    .attr('cx', d=>x(d.datetime))
+    .attr('cy', d=>y(d.hourFrac))
+    .attr('r' , d=>r(d.totalLines))
+    .attr('fill','steelblue')
+    .attr('fill-opacity',0.7)
+    .on('mouseenter', (ev,d) => {
+      d3.select(ev.currentTarget).attr('fill-opacity',1);
+      showTooltip(d, ev.clientX, ev.clientY, true);
+    })
+    .on('mousemove', (ev,d) => showTooltip(d, ev.clientX, ev.clientY))
+    .on('mouseleave', (ev,d) => {
+      d3.select(ev.currentTarget).attr('fill-opacity',0.7);
+      showTooltip(null);
+    })
+    .on('click', (ev, d) => {
+      window.open(d.url, '_blank');
+    });
 
   svg.append('g')
      .attr('transform',`translate(0,${usable.y0})`)

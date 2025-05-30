@@ -1,32 +1,16 @@
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Meta&nbsp;analysis · Vincent Cho</title>
-
-    <base href="/portfolio/meta/">
-    <link rel="stylesheet" href="/portfolio/style.css" />
-    <script type="module" src="/portfolio/global.js"></script>
-    <script type="module" src="./main.js"></script>
-  </head>
-
-  <body>
-    <h1>Repository meta-analysis</h1>
-    <p>This page shows some stats about the code on this website!</p>
-
-    <div id="stats"></div>
-
-    <h2>Commits by time of day</h2>
-    <p id="selection-count">No commits selected</p>
-    <div id="chart"></div>
-    <dl id="language-breakdown" class="stats"></dl>
-
-    <dl id="commit-tooltip" class="info tooltip" hidden>
-      <dt>Commit</dt><dd><a id="commit-link" target="_blank"></a></dd>
-      <dt>Date</dt><dd id="commit-date"></dd>
-      <dt>Time</dt><dd id="commit-time"></dd>
-      <dt>Author</dt><dd id="commit-author"></dd>
-      <dt>Lines edited</dt><dd id="commit-lines"></dd>
-    </dl>
-  </body>
-</html>
+<h1>Repository evolution</h1>
+<div class="timeline">
+  <label
+    >Show commits until:
+    <input type="range" id="commit-progress" min="0" max="100" value="100" />
+    <time id="commit-time"></time>
+  </label>
+</div>
+<div id="chart"></div>
+<dl id="stats" class="stats"></dl>
+<dl id="files"></dl>
+<div id="scrolly-1">
+  <div id="scatter-story"></div>
+  <div id="scatter-plot"></div>
+</div>
+<script type="module" src="./meta.js"></script>

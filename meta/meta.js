@@ -1,210 +1,165 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import scrollama from "https://cdn.jsdelivr.net/npm/scrollama@3.2.0/+esm";
 
+const repoURL = "https://github.com/vcho116055/portfolio";
 const commits = await d3.json("./commits.json");
 
-function processCommits(list) {
-  for (const d of list) {
-    d.datetime = new Date(d.datetime);
-    d.hourFrac = d.datetime.getHours() + d.datetime.getMinutes() / 60;
-    d.id = d.sha;
-  }
+for (const d of commits) {
+  d.datetime = new Date(d.datetime);
+  d.hourFrac = d.datetime.getHours() + d.datetime.getMinutes() / 60;
+  d.id = d.sha;
+  if (!d.totalLines) d.totalLines = d.lines.length;
+  d.url = `${repoURL}/commit/${d.sha}`;
 }
 
-processCommits(commits);
+const width = 1000;
+const height = 600;
+const margin = { t: 10, r: 10, b: 30, l: 40 };
+const innerW = width - margin.l - margin.r;
+const innerH = height - margin.t - margin.b;
 
-let xScale, yScale, rScale;
+const x = d3
+  .scaleTime()
+  .domain(d3.extent(commits, (d) => d.datetime))
+  .range([margin.l, margin.l + innerW]);
+const y = d3
+  .scaleLinear()
+  .domain([0, 24])
+  .range([margin.t + innerH, margin.t]);
+const r = d3
+  .scaleSqrt()
+  .domain(d3.extent(commits, (d) => d.totalLines))
+  .range([2, 30]);
 
-function renderScatterPlot(data) {
-  const width = 1000;
-  const height = 600;
-  const margin = { top: 10, right: 10, bottom: 30, left: 40 };
-  const usable = {
-    left: margin.left,
-    top: margin.top,
-    width: width - margin.left - margin.right,
-    height: height - margin.top - margin.bottom,
-    bottom: height - margin.bottom,
-  };
+const svg = d3
+  .select("#chart")
+  .selectAll("svg")
+  .data([null])
+  .join("svg")
+  .attr("viewBox", `0 0 ${width} ${height}`);
+svg
+  .append("g")
+  .attr("class", "x-axis")
+  .attr("transform", `translate(0,${margin.t + innerH})`)
+  .call(d3.axisBottom(x));
+svg
+  .append("g")
+  .attr("class", "y-axis")
+  .attr("transform", `translate(${margin.l},0)`)
+  .call(d3.axisLeft(y).ticks(6));
+svg
+  .append("g")
+  .attr("class", "y-grid")
+  .attr("transform", `translate(${margin.l},0)`)
+  .call(d3.axisLeft(y).tickSize(-innerW).tickFormat(""));
+const dotsG = svg.append("g").attr("class", "dots");
 
-  const svg = d3
-    .select("#chart")
-    .selectAll("svg")
-    .data([null])
-    .join("svg")
-    .attr("viewBox", `0 0 ${width} ${height}`);
-
-  xScale = d3
-    .scaleTime()
-    .domain(d3.extent(commits, (d) => d.datetime))
-    .range([usable.left, usable.left + usable.width]);
-
-  yScale = d3
-    .scaleLinear()
-    .domain([0, 24])
-    .range([usable.top + usable.height, usable.top]);
-
-  const [minLines, maxLines] = d3.extent(commits, (d) => d.totalLines);
-  rScale = d3
-    .scaleSqrt()
-    .domain([Math.max(1, minLines), Math.max(1, maxLines)])
-    .range([2, 30]);
-
-  svg
-    .selectAll("g.x-axis")
-    .data([null])
-    .join("g")
-    .attr("class", "x-axis")
-    .attr("transform", `translate(0, ${usable.top + usable.height})`)
-    .call(d3.axisBottom(xScale));
-
-  svg
-    .selectAll("g.y-axis")
-    .data([null])
-    .join("g")
-    .attr("class", "y-axis")
-    .attr("transform", `translate(${usable.left},0)`)
-    .call(d3.axisLeft(yScale).ticks(6));
-
-  const dotsGroup = svg
-    .selectAll("g.dots")
-    .data([null])
-    .join("g")
-    .attr("class", "dots");
-
-  const sorted = d3.sort(data, (d) => -d.totalLines);
-
-  dotsGroup
+function draw(list) {
+  dotsG
     .selectAll("circle")
-    .data(sorted, (d) => d.id)
+    .data(
+      d3.sort(list, (d) => -d.totalLines),
+      (d) => d.id
+    )
     .join(
       (enter) =>
         enter
           .append("circle")
-          .attr("cx", (d) => xScale(d.datetime))
-          .attr("cy", (d) => yScale(d.hourFrac))
-          .attr("r", (d) => rScale(d.totalLines))
-          .attr("fill", "steelblue")
-          .style("fill-opacity", 0.7),
-      (update) =>
-        update
-          .transition()
-          .duration(200)
-          .attr("cx", (d) => xScale(d.datetime))
-          .attr("cy", (d) => yScale(d.hourFrac))
-          .attr("r", (d) => rScale(d.totalLines)),
-      (exit) => exit.remove()
-    );
-}
-
-function updateScatterPlot(filtered) {
-  const svg = d3.select("#chart svg");
-  if (!svg.size()) return;
-  xScale.domain(
-    d3.extent(filtered.length ? filtered : commits, (d) => d.datetime)
-  );
-  svg.select("g.x-axis").call(d3.axisBottom(xScale));
-  const sorted = d3.sort(filtered, (d) => -d.totalLines);
-  svg
-    .select("g.dots")
-    .selectAll("circle")
-    .data(sorted, (d) => d.id)
-    .join(
-      (enter) =>
-        enter
-          .append("circle")
-          .attr("cx", (d) => xScale(d.datetime))
-          .attr("cy", (d) => yScale(d.hourFrac))
+          .attr("cx", (d) => x(d.datetime))
+          .attr("cy", (d) => y(d.hourFrac))
           .attr("r", 0)
           .attr("fill", "steelblue")
           .style("fill-opacity", 0.7)
           .transition()
-          .duration(200)
-          .attr("r", (d) => rScale(d.totalLines)),
+          .attr("r", (d) => r(d.totalLines)),
       (update) =>
         update
           .transition()
-          .duration(200)
-          .attr("cx", (d) => xScale(d.datetime))
-          .attr("cy", (d) => yScale(d.hourFrac))
-          .attr("r", (d) => rScale(d.totalLines)),
-      (exit) => exit.transition().duration(200).attr("r", 0).remove()
+          .attr("cx", (d) => x(d.datetime))
+          .attr("cy", (d) => y(d.hourFrac))
+          .attr("r", (d) => r(d.totalLines)),
+      (exit) => exit.transition().attr("r", 0).remove()
     );
 }
 
-function renderCommitInfo(list) {
-  const total = list.length;
-  const earliest = d3.min(list, (d) => d.datetime);
-  const latest = d3.max(list, (d) => d.datetime);
-  d3.select("#stats").html(
-    `Commits: ${total} | Range: ${earliest.toLocaleDateString()} – ${latest.toLocaleDateString()}`
-  );
+function updateStats(list) {
+  const allLines = list.flatMap((d) => d.lines);
+  const data = [
+    ["COMMITS", list.length],
+    ["FILES", new Set(allLines.map((l) => l.file)).size],
+    ["TOTAL LOC", allLines.length],
+    ["MAX LINES", d3.max(list, (d) => d.totalLines)],
+  ];
+  d3.select("#stats")
+    .selectAll("div")
+    .data(data)
+    .join("div")
+    .html((d) => `<strong>${d[0]}</strong><br>${d[1]}`);
 }
 
-renderScatterPlot(commits);
-renderCommitInfo(commits);
-
-const slider = d3.select("#commit-progress").on("input", onTimeSliderChange);
-const timeLabel = d3.select("#commit-time");
-
-const timeScale = d3
-  .scaleTime()
-  .domain(d3.extent(commits, (d) => d.datetime))
-  .range([0, 100]);
-
-let commitProgress = 100;
-let commitMaxTime = timeScale.invert(commitProgress);
-
-timeLabel.text(
-  commitMaxTime.toLocaleString("en", { dateStyle: "long", timeStyle: "short" })
-);
-
-function onTimeSliderChange() {
-  commitProgress = +slider.node().value;
-  commitMaxTime = timeScale.invert(commitProgress);
-  timeLabel.text(
-    commitMaxTime.toLocaleString("en", {
-      dateStyle: "long",
-      timeStyle: "short",
-    })
-  );
-  const filtered = commits.filter((d) => d.datetime <= commitMaxTime);
-  updateScatterPlot(filtered);
-  updateFileDisplay(filtered);
-  renderCommitInfo(filtered);
-}
-
-function updateFileDisplay(filtered) {
-  const lines = filtered.flatMap((d) => d.lines);
+function updateFileDisplay(list) {
+  const lines = list.flatMap((d) => d.lines);
   const files = d3
-    .groups(lines, (d) => d.file)
-    .map(([name, l]) => ({ name, lines: l }))
-    .sort((a, b) => b.lines.length - a.lines.length);
+    .groups(lines, (l) => l.file)
+    .map(([name, arr]) => ({ name, lines: arr }))
+    .sort((a, b) => b.lines.length - a.lines.length)
+    .slice(0, 40);
 
-  const fileDivs = d3
+  const rows = d3
     .select("#files")
     .selectAll("div")
     .data(files, (d) => d.name)
     .join((enter) =>
       enter.append("div").call((div) => {
-        div.append("dt").append("code");
+        div.append("dt");
         div.append("dd");
       })
     );
 
-  fileDivs.select("dt>code").text((d) => d.name);
-  fileDivs
+  rows.select("dt").text((d) => d.name);
+
+  rows
     .select("dd")
     .html((d) => `${d.lines.length} lines`)
-    .selectAll("div")
+    .selectAll(".loc")
     .data((d) => d.lines)
     .join("div")
-    .attr("class", "loc");
+    .attr("class", "loc")
+    .style("--clr", (l, i, arr) => d3.schemeTableau10[i % 10]);
 }
 
+function refresh(view) {
+  svg
+    .select(".x-axis")
+    .call(d3.axisBottom(x.domain(d3.extent(view, (d) => d.datetime))));
+  draw(view);
+  updateStats(view);
+  updateFileDisplay(view);
+}
+
+draw(commits);
+updateStats(commits);
 updateFileDisplay(commits);
 
-const scroller = scrollama();
+const slider = d3.select("#commit-progress").on("input", onSlide);
+const label = d3.select("#commit-time");
+const tScale = d3
+  .scaleTime()
+  .domain(d3.extent(commits, (d) => d.datetime))
+  .range([0, 100]);
+label.text(commits[commits.length - 1].datetime.toLocaleString());
+
+function onSlide() {
+  const subset = commits.filter(
+    (d) => d.datetime <= tScale.invert(+slider.node().value)
+  );
+  label.text(
+    tScale
+      .invert(+slider.node().value)
+      .toLocaleString("en", { dateStyle: "long", timeStyle: "short" })
+  );
+  refresh(subset);
+}
 
 d3.select("#scatter-story")
   .selectAll(".step")
@@ -213,15 +168,16 @@ d3.select("#scatter-story")
   .attr("class", "step")
   .html(
     (d) =>
-      `On ${d.datetime.toLocaleDateString()} I made <a href="${
-        d.url
-      }" target="_blank">a commit</a> touching ${d.totalLines} lines.`
+      `On ${d.datetime.toLocaleDateString()} I made a commit touching ${
+        d.totalLines
+      } lines. <a href="${d.url}" target="_blank">→ view</a>`
   );
 
+const scroller = scrollama();
+
 scroller
-  .setup({ container: "#scrolly-1", step: "#scrolly-1 .step" })
-  .onStepEnter((r) => {
-    const thisCommit = r.element.__data__;
-    slider.node().value = timeScale(thisCommit.datetime);
-    onTimeSliderChange();
+  .setup({ container: "#scrolly-1", step: "#scrolly-1 .step", offset: 0.6 })
+  .onStepEnter((s) => {
+    slider.node().value = tScale(s.element.__data__.datetime);
+    onSlide();
   });

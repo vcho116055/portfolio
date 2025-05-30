@@ -278,3 +278,102 @@ circle {
   border-radius: 50%;
   background: var(--color, steelblue);
 }
+
+.timeline {
+  margin: 0 1rem 2rem;
+}
+.timeline input[type="range"] {
+  width: 60%;
+  vertical-align: middle;
+}
+
+#scrolly-1 {
+  display: flex;
+  gap: 2rem;
+  padding: 0 1rem;
+}
+#scatter-story {
+  flex: 0 0 38ch;
+}
+#scatter-plot {
+  position: sticky;
+  top: 6rem;
+  flex: 1;
+  height: 60vh;
+}
+.step {
+  margin: 0 0 25vh 0;
+  padding: 0;
+}
+
+#chart {
+  width: 100%;
+  height: 100%;
+}
+circle {
+  transition: 200ms;
+}
+@starting-style {
+  circle {
+    r: 0;
+  }
+}
+g.y-grid line {
+  stroke: #e0e0e0;
+  stroke-width: 1;
+}
+
+#stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(6rem, 1fr));
+  gap: 0.5rem;
+  margin: 2rem 1rem 1rem;
+  text-align: center;
+}
+#stats div strong {
+  display: block;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: #666;
+}
+#stats div {
+  font-size: 1.6rem;
+}
+
+#files {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font: 14px/1.2 monospace;
+  margin: 0 1rem 3rem;
+}
+#files > div {
+  display: flex;
+  align-items: center;
+}
+#files dt {
+  width: 160px;
+  margin: 0;
+  position: relative;
+  padding-left: 1.4em;
+}
+#files dt::before {
+  content: "📄";
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+#files dd {
+  margin: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.loc {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 2px;
+  background: var(--clr, steelblue);
+}
